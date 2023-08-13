@@ -64,7 +64,7 @@ public class UserService {
         return new UserLoginResponseDto(jwtTokenUtils.generateToken(userDetails));
     }
 
-    // 유저 조회 메소드
+    // 유저 조회 메서드
     public UserMyPageResponseDto profile(String accountId) {
         Optional<UserEntity> entity = repository.findByAccountId(accountId);
         if(entity.isPresent()) {
@@ -72,7 +72,7 @@ public class UserService {
         } else throw new BusinessException(BusinessExceptionCode.NOT_EXIST_USER_ERROR);
     }
 
-    // 유저 정보 수정 메소드
+    // 유저 정보 수정 메서드
     public UserMyPageRequestDto update(UserMyPageRequestDto dto) {
         String password = dto.getPassword();
         String passwordCheck = dto.getPasswordCheck();

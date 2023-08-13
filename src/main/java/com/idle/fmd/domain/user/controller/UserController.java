@@ -53,7 +53,7 @@ public class UserController {
         return userService.update(dto);
     }
 
-    // 회원 탈퇴 (유저 정보 삭제)
+    // 유저 정보 삭제 (회원 탈퇴)
     @DeleteMapping("/mypage")
     public void UserDelete(Authentication authentication) {
         String accountId = authentication.getName();

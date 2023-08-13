@@ -93,4 +93,14 @@ public class UserService {
 
         return dto;
     }
+
+    // User 삭제 메서드
+    public void delete(String accountId) {
+        if(!manager.userExists(accountId)) {
+            throw new BusinessException(BusinessExceptionCode.NOT_EXIST_USER_ERROR);
+        }
+
+        // UserDetailsManager의 deleteUser 메소드를 호출하여 유저 정보 삭제
+        manager.deleteUser(accountId);
+    }
 }

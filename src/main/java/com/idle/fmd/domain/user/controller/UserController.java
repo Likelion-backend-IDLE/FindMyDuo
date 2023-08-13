@@ -52,4 +52,11 @@ public class UserController {
             @RequestBody UserMyPageRequestDto dto) {
         return userService.update(dto);
     }
+
+    // 회원 탈퇴 (유저 정보 삭제)
+    @DeleteMapping("/mypage")
+    public void UserDelete(Authentication authentication) {
+        String accountId = authentication.getName();
+        userService.delete(accountId);
+    }
 }

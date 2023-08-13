@@ -3,16 +3,23 @@ package com.idle.fmd.domain.user.service;
 
 import com.idle.fmd.domain.user.dto.UserLoginRequestDto;
 import com.idle.fmd.domain.user.dto.UserLoginResponseDto;
+import com.idle.fmd.domain.user.dto.UserMyPageResponseDto;
+import com.idle.fmd.domain.user.entity.UserEntity;
+import com.idle.fmd.domain.user.repo.UserRepository;
 import com.idle.fmd.global.auth.jwt.JwtTokenUtils;
 import com.idle.fmd.global.error.exception.BusinessException;
 import com.idle.fmd.global.error.exception.BusinessExceptionCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.idle.fmd.domain.user.dto.SignupDto;
 import com.idle.fmd.domain.user.entity.CustomUserDetails;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,6 +28,7 @@ public class UserService {
     private final CustomUserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
+    private final UserRepository repository;
 
     // 회원가입 메서드
     public void signup(SignupDto dto){
@@ -57,5 +65,13 @@ public class UserService {
         }
 
         return new UserLoginResponseDto(jwtTokenUtils.generateToken(userDetails));
+    }
+
+    // 유저 조회 메소드
+    public UserMyPageResponseDto profile(String accountId) {
+        Optional<UserEntity> entity = repository.findByAccountId(accountId);
+        if(entity.isPresent()) {
+            return UserMyPageResponseDto.fromEntity(entity.get());
+        } else throw new BusinessException(BusinessExceptionCode.NOT_EXIST_USER_ERROR);
     }
 }

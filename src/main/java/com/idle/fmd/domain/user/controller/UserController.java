@@ -1,9 +1,11 @@
 package com.idle.fmd.domain.user.controller;
 
 import com.idle.fmd.domain.user.dto.UserLoginRequestDto;
+import com.idle.fmd.domain.user.dto.UserMyPageResponseDto;
 import com.idle.fmd.domain.user.service.UserService;
 import com.idle.fmd.domain.user.dto.UserLoginResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.idle.fmd.domain.user.dto.SignupDto;
@@ -37,5 +39,13 @@ public class UserController {
     public UserLoginResponseDto oauthLogin(@RequestParam("token") String token) {
         return new UserLoginResponseDto(token);
 
+    }
+
+    // 유저 정보 조회
+    @GetMapping("/mypage")
+    public UserMyPageResponseDto myPage(Authentication authentication) {
+        String accountId = authentication.getName();
+        UserMyPageResponseDto user = userService.profile(accountId);
+        return user;
     }
 }

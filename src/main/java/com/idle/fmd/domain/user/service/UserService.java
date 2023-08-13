@@ -1,9 +1,7 @@
 package com.idle.fmd.domain.user.service;
 
 
-import com.idle.fmd.domain.user.dto.UserLoginRequestDto;
-import com.idle.fmd.domain.user.dto.UserLoginResponseDto;
-import com.idle.fmd.domain.user.dto.UserMyPageResponseDto;
+import com.idle.fmd.domain.user.dto.*;
 import com.idle.fmd.domain.user.entity.UserEntity;
 import com.idle.fmd.domain.user.repo.UserRepository;
 import com.idle.fmd.global.auth.jwt.JwtTokenUtils;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.idle.fmd.domain.user.dto.SignupDto;
 import com.idle.fmd.domain.user.entity.CustomUserDetails;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -73,5 +70,27 @@ public class UserService {
         if(entity.isPresent()) {
             return UserMyPageResponseDto.fromEntity(entity.get());
         } else throw new BusinessException(BusinessExceptionCode.NOT_EXIST_USER_ERROR);
+    }
+
+    // 유저 정보 수정 메소드
+    public UserMyPageRequestDto update(UserMyPageRequestDto dto) {
+        String password = dto.getPassword();
+        String passwordCheck = dto.getPasswordCheck();
+
+        // 비밀번호와 비밀번호 확인 데이터가 다르면 예외 발생 (회원가입에 사용한 에러 사용)
+        if(!password.equals(passwordCheck))
+            throw new BusinessException(BusinessExceptionCode.PASSWORD_CHECK_ERROR);
+
+        CustomUserDetails updateUserDetails =
+                CustomUserDetails.builder()
+                        .email(dto.getEmail())
+                        .nickname(dto.getNickname())
+                        .password(passwordEncoder.encode(dto.getPassword()))
+                        .build();
+
+        // CustomUserDetailsManager 의 updateUser 메서드를 호출해서 유저를 등록 (UserDetails 객체 전달 필요)
+        manager.updateUser(updateUserDetails, dto.getAccountId());
+
+        return dto;
     }
 }

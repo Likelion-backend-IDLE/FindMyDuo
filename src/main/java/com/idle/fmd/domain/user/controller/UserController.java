@@ -1,14 +1,11 @@
 package com.idle.fmd.domain.user.controller;
 
-import com.idle.fmd.domain.user.dto.UserLoginRequestDto;
-import com.idle.fmd.domain.user.dto.UserMyPageResponseDto;
+import com.idle.fmd.domain.user.dto.*;
 import com.idle.fmd.domain.user.service.UserService;
-import com.idle.fmd.domain.user.dto.UserLoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.idle.fmd.domain.user.dto.SignupDto;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,5 +44,12 @@ public class UserController {
         String accountId = authentication.getName();
         UserMyPageResponseDto user = userService.profile(accountId);
         return user;
+    }
+
+    // 유저 정보 수정
+    @PutMapping("/mypage")
+    public UserMyPageRequestDto updateMyPage(
+            @RequestBody UserMyPageRequestDto dto) {
+        return userService.update(dto);
     }
 }

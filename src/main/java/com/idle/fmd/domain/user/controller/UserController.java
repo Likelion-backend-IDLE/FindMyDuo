@@ -7,6 +7,7 @@ import com.idle.fmd.global.error.exception.BusinessExceptionCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -61,5 +61,13 @@ public class UserController {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         // 토큰을 전달
         userService.logout(token);
+    }
+
+    // 마이페이지 유저 정보 조회
+    @GetMapping("/mypage")
+    public UserMyPageResponseDto myPage(Authentication authentication) {
+        String accountId = authentication.getName();
+        UserMyPageResponseDto user = userService.profile(accountId);
+        return user;
     }
 }

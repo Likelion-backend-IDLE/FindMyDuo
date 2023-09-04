@@ -7,10 +7,12 @@ on:
     branches:
       - main
       - develop
+      - 74-ci-fix-1
   pull_request:
     branches: 
       - main
       - develop
+      - 74-ci-fix-1
 
 permissions:
   contents: read
@@ -58,12 +60,18 @@ jobs:
       # develop 브랜치 일때
       if: contains(github.ref, 'develop') 
       run: |
-        # 프로젝트의 resources 경로로 이동
         cd ./src/main/resources
-        # 이동한 경로에 application-dev.yaml 파일 생성
         touch ./application-dev.yaml
-        # Github Secret에 설정한 내용을 application-dev.yaml 파일에 쓰기
         echo "${{ secrets.APPLICATION_DEV}}" > ./application-dev.yaml
+
+    # application-fix.yaml 생성
+    - name: make application-fix.yaml
+      # develop 브랜치 일때
+      if: contains(github.ref, '74-ci-fix-1')
+      run: |
+        cd ./src/main/resources
+        touch ./application-dev.yaml
+        echo "${{ secrets.APPLICATION_FIX}}" > ./application-fix.yaml
     
     # Gradlew 권한 설정
     - name: Grant execute permission for gradlew
@@ -89,6 +97,14 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/fmd-dev:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/fmd-dev:latest
+
+    # Fix
+    - name: Docker build & push to dev
+      if: contains(github.ref, '74-ci-fix-1')
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/fmd-fix:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/fmd-fix:latest
 
   # Deploy
     # Prod
@@ -118,5 +134,20 @@ jobs:
         script: |
           docker rm -f $(docker ps -qa)
           docker pull ${{ secrets.DOCKER_USERNAME }}/fmd-dev:latest
+          docker-compose -f docker-compose.dev.yaml up -d
+          docker image prune -a -f
+
+    # Fix
+    - name: Deploy to fix
+      uses: appleboy/ssh-action@master
+      id: deploy-fix
+      if: contains(github.ref, '74-ci-fix-1')
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        script: |
+          docker rm -f $(docker ps -qa)
+          docker pull ${{ secrets.DOCKER_USERNAME }}/fmd-fix:latest
           docker-compose -f docker-compose.dev.yaml up -d
           docker image prune -a -f

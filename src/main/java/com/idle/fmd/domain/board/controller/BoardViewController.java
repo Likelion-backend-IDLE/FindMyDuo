@@ -21,15 +21,9 @@ public class BoardViewController {
         return "board/board-list";
     }
 
-    @GetMapping("/view/{boardId}")
-    public String boardRead(@PathVariable Long boardId, Model model){
-        model.addAttribute("board", boardService.boardRead(boardId));
-        return "board/board-read";
+    @GetMapping("/bookmark")
+    public String bookmark(){
+        return "board/board-bookmark";
     }
-
-//    @GetMapping("/createView")
-//    public String boardCreateView() {
-//        return "board/board-create";
-//    }
 
 }

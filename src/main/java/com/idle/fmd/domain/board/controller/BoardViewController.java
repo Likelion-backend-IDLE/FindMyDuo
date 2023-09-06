@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class BoardViewController {
 
+    // 게시글 전체 조회
     @GetMapping("/view")
     public String board(){
         return "board/board-list";
     }
 
+    // 즐겨찾기 게시글 조회
     @GetMapping("/bookmark")
     public String bookmark(){
         return "board/board-bookmark";

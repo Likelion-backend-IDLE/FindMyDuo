@@ -35,7 +35,7 @@
   <div v-else v-for="board in content" :key="board.id">
     <p>번호: {{ board.id }}</p>
     <!-- 게시물 상세 페이지로 이동할 수 있는 링크 추가 -->
-    <p>제목: <a :href="'/boards/' + board.id">{{ board.title }}</a></p>
+    <p>제목: <a :href="'/board/view/' + board.id">{{ board.title }}</a></p>
     <p>작성자: {{ board.nickName }}</p>
     <p>좋아요: {{ board.liked }}</p>
     <p>수정시간: {{ board.modifiedAt }}</p>

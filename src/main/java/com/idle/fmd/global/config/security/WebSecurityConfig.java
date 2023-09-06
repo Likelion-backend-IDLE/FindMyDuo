@@ -29,7 +29,15 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         authHttp -> authHttp
                                 .requestMatchers(
-                                        HttpMethod.GET, "/board/**"
+                                        HttpMethod.GET, "/board/**",
+                                        "/webjars/**",
+                                        "/static/**",
+                                        "/main",
+                                        "/login",
+                                        "/signup",
+                                        "/mypage",
+                                        "/matching",
+                                        "/chat"
                                 )
                                 .permitAll()
                                 .requestMatchers(

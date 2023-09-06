@@ -1,6 +1,5 @@
 package com.idle.fmd.domain.board.controller;
 
-import com.idle.fmd.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

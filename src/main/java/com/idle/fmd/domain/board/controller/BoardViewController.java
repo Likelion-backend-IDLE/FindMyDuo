@@ -1,10 +1,10 @@
 package com.idle.fmd.domain.board.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/board")
@@ -22,6 +22,12 @@ public class BoardViewController {
         return "board/board-bookmark";
     }
 
+    // 단일조회
+    @GetMapping("/view/{boardId}")
+    public String read() {
+        return "/board/board";
+    }
+
     // 글 작성 폼으로 이동
     @GetMapping("/form/write")
     public String writeForm() {
@@ -33,4 +39,5 @@ public class BoardViewController {
     public String updateForm() {
         return "/board/board-update-form";
     }
+
 }
